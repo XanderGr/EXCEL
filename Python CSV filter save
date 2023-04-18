@@ -1,0 +1,29 @@
+import pandas as pd
+import datetime
+ 
+# Step 1: Download and convert the file to a CSV file
+file_name = input("Please enter the name of the Excel file: ")
+file_path = r"C:\Users\user\Downloads\{}".format(file_name)
+df = pd.read_excel(file_path, sheet_name="Export")
+ 
+csv_file_path = r"C:\Users\user\Downloads\New report {}.csv".format(datetime.date.today().strftime("%d-%m-%Y"))
+df.to_csv(csv_file_path, index=False)
+ 
+
+# Step 2: Filter the data
+df_filtered = df[df['COLUMNTOFILTER'].isin(['Error 1', 'Error 2', 'Error 3'])]
+ 
+# Step 3: Remove the empty cells in the sensitive column
+df_filtered = df_filtered[df_filtered['Sensitive Column'] != 0]
+df_filtered = df_filtered[df_filtered['Sensitive Column'] != "#N/A"]
+df_filtered.dropna(subset=['Sensitive Column'], inplace=True)
+ 
+# Step 4: Save the filtered DataFrame as a new file
+today = datetime.datetime.now().strftime("%Y-%m-%d")
+new_file_path = r"C:\Users\user\Downloads\Report " + today + ".xlsx"
+df_filtered.to_excel(new_file_path, index=False)
+ 
+# Step 5: Generate another file by filtering on the "Inflight status" = Waiting Logistics Delivery
+df_waiting_logistics = df[df['COLUMNTOSEARCH'] == 'SELECTED_CRITERIA']
+new_file_path = r"C:\Users\user\Downloads\NAME_Report {}.xlsx".format(datetime.date.today().strftime("%Y-%m-%d"))
+df_waiting_logistics.to_excel(new_file_path, index=False)
