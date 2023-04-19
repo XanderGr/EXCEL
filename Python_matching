@@ -1,0 +1,30 @@
+import pandas as pd
+import os
+import datetime
+ 
+# Define the search criteria for the column use the placeholder
+search_criteria = [
+    "placeholder"
+]
+ 
+# Read the excel file into a pandas DataFrame
+file_path = input("Enter the file path and name: ").replace('"', '').strip()
+df = pd.read_excel(file_path)
+ 
+# Filter the DataFrame for rows where the placeholder column matches one of the search criteria
+filtered_df = df[df['COLUMN_NAME'].str.contains('|'.join(search_criteria))]
+ 
+# Check if there are any matching rows
+if filtered_df.empty:
+    # If there are no matching rows, create a text file to indicate there are no matches
+    current_date = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
+    file_name = "NO_MATCHES_FOUND" + current_date + ".txt"
+    file_path = os.path.join(os.path.dirname(file_path), file_name)
+    with open(file_path, "w") as f:
+        f.write("No Matches found as of " + current_date)
+else:
+    # If there are matching rows, write the filtered DataFrame to a new excel file
+    current_date = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
+    file_name = "Matchesdata_" + current_date + ".xlsx"
+    file_path = os.path.join(os.path.dirname(file_path), file_name)
+    filtered_df.to_excel(file_path, index=False)
