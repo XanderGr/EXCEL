@@ -38,7 +38,7 @@ with open(csv_path, newline='') as csv_file:
     date_string = datetime.now().strftime("%d%m%Y-%H%M%S")
  
     # Write the output to a CSV file with the required name in the downloads folder
-    output_file_name = f"ORDERidCORRELATIONid_{date_string}.csv"
+    output_file_name = f"idCORRELATIONid_{date_string}.csv"
     output_file_path = os.path.join(os.path.expanduser("~"), "Downloads", output_file_name)
     with open(output_file_path, 'w', newline='') as output_file:
         csv_writer = csv.writer(output_file)
