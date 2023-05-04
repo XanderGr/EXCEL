@@ -1,0 +1,50 @@
+import os
+import csv
+import uuid
+from datetime import datetime
+ 
+# Get the IDs and CSV file path
+IDs = input("Enter the IDs separated by spaces: ")
+IDs = IDs.split()  # convert the IDs to a list
+csv_path = input("Enter the path of the input CSV file: ")
+ 
+# Remove quotes from the CSV file path
+csv_path = csv_path.replace('"', '')
+ 
+# Read the CSV file
+with open(csv_path, newline='') as csv_file:
+    csv_reader = csv.reader(csv_file)
+    header = next(csv_reader) # Read the first row as the header
+ 
+    # Check if the CSV file has the expected headers
+    expected_headers = ['ID', 'correlationid']
+    if not all(header_col in header for header_col in expected_headers):
+        raise ValueError(f"Expected headers {expected_headers} not found in CSV file")
+ 
+    # Find the column indices for ID and correlationid
+    ID_col_index = header.index('ID')
+    correlation_id_col_index = header.index('correlationid')
+ 
+    # Create a dictionary to store the correlation IDs for the given IDs
+    ID_correlation_dict = {}
+    for row in csv_reader:
+        ID = row[ID_col_index]
+        correlation_id = row[correlation_id_col_index]
+        if ID in IDs:
+            ID_correlation_dict[ID] = correlation_id
+ 
+    # Generate a unique identifier and format the date
+    unique_id = uuid.uuid4()
+    date_string = datetime.now().strftime("%d%m%Y-%H%M%S")
+ 
+    # Write the output to a CSV file with the required name in the downloads folder
+    output_file_name = f"ORDERidCORRELATIONid_{date_string}.csv"
+    output_file_path = os.path.join(os.path.expanduser("~"), "Downloads", output_file_name)
+    with open(output_file_path, 'w', newline='') as output_file:
+        csv_writer = csv.writer(output_file)
+        csv_writer.writerow(['ID', 'correlationid'])
+        for ID in IDs:
+            correlation_id = ID_correlation_dict.get(ID, '')
+            csv_writer.writerow([ID, correlation_id])
+ 
+    print(f"Output file saved to {output_file_path}")
